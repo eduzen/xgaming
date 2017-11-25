@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import UserLogin
 
-# Register your models here.
+
+@admin.register(UserLogin)
+class UserLoginAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'timestamp', )
+
