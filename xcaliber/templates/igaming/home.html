@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %}
+{% block content %}
+
+    {% if user.is_authenticated %}
+        <h3>Welcome {{ user.get_username }}!</h3>
+        
+        <h4>Let's play</h4>
+
+        <p>choose a number</p>
+	    
+        <hr />
+        <a href="{% url 'logout' %}">Log out</a>
+    {% else %}
+        <h3>Welcome!</h3>
+        <p>Do you wanna play?</p>
+        <a href="{% url 'login' %}">login</a> | 
+        <a href="{% url 'signup' %}">new user?</a>
+    {% endif %}
+
+{% endblock %}
