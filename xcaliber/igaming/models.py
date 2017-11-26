@@ -42,6 +42,7 @@ class Deposit(models.Model):
 
 
 class Bonus(models.Model):
+    """ Abstract class for Bonus"""
     wallet = models.ForeignKey('Wallet')
     currency = models.CharField(max_length=3,
                                 choices=CURRENCIES, default=CURRENCIES[0][0])

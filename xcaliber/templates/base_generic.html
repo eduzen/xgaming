@@ -8,6 +8,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" rel="stylesheet">
   </head>
   <body>
     <div class="container">
@@ -20,5 +21,38 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-  </body>
+    <script>
+            $(function() {
+                var action;
+                $(".number-spinner button").mousedown(function () {
+                    btn = $(this);
+                    input = btn.closest('.number-spinner').find('input');
+                    btn.closest('.number-spinner').find('button').prop("disabled", false);
+
+                    if (btn.attr('data-dir') == 'up') {
+                        action = setInterval(function(){
+                            if ( input.attr('max') == undefined || parseInt(input.val()) < parseInt(input.attr('max')) ) {
+                                input.val(parseInt(input.val())+1);
+                            }else{
+                                btn.prop("disabled", true);
+                                clearInterval(action);
+                            }
+                        }, 50);
+                    } else {
+                        action = setInterval(function(){
+                            if ( input.attr('min') == undefined || parseInt(input.val()) > parseInt(input.attr('min')) ) {
+                                input.val(parseInt(input.val())-1);
+                            }else{
+                                btn.prop("disabled", true);
+                                clearInterval(action);
+                            }
+                        }, 50);
+                    }
+                }).mouseup(function(){
+                    clearInterval(action);
+                });
+            });
+    </script>
+
+    </body>
 </html>

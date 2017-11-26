@@ -1,3 +1,4 @@
+from collections import defaultdict
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -22,7 +23,11 @@ def signup(request):
 
 
 def home(request):
-    return render(request, 'igaming/home.html', {})
+    data = defaultdict()
+    if request.user.is_authenticated:
+        data['money'] = request.user.wallet.value
+
+    return render(request, 'igaming/home.html', data)
 
 
 def index(request):

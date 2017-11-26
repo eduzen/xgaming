@@ -3,11 +3,64 @@
 
     {% if user.is_authenticated %}
         <h3>Welcome {{ user.get_username }}!</h3>
-        
-        <h4>Let's play</h4>
+
+        <div class="container">
+		<div class="row">
+            <div class="col-sm">
+                <p>Your values: </p>
+            </div>
+			<div class="col-sm">
+            <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th>#</th>
+                  <th>Money</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>{{money}}</td>
+                </tr>
+              </tbody>
+            </table>
+			</div>
+			<div class="col-sm"></div>
+		</div>
+		</div>
+        <hr />
+        <h4>Let's play roulette</h4>
 
         <p>choose a number</p>
-	    
+
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-3 col-xs-offset-3">
+                    <p>Min: 0</p>
+                    <p>Max: 36</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 col-xs-offset-3">
+                    <div class="input-group number-spinner">
+                        <span class="input-group-btn data-dwn">
+                            <button class="btn btn-default btn-info" data-dir="dwn"><span class="glyphicon glyphicon-minus"></span></button>
+                        </span>
+                        <input type="text" class="form-control text-center" value="1" min="0" max="36">
+                        <span class="input-group-btn data-up">
+                            <button class="btn btn-default btn-info" data-dir="up">
+                                <span class="glyphicon glyphicon-plus"></span></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 col-xs-offset-3">
+                    <button id="play" type="button" class="btn btn-success">Success</button>
+                </div>
+            </div>
+        </div>
+
         <hr />
         <a href="{% url 'logout' %}">Log out</a>
     {% else %}
