@@ -88,10 +88,10 @@ def update_user_login(sender, user, **kwargs):
     user.userlogin_set.create(timestamp=timezone.now())
     if hasattr(user, 'wallet'):
         bonus = LoginBonus.objects.create(wallet=user.wallet)
+        bonus.save()
         user.wallet.value += Decimal(bonus.value)
         user.wallet.save()
     user.save()
-
 
 @receiver(post_save, sender=User)
 def create_user_wallet(sender, instance, created, **kwargs):
