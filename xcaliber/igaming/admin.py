@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import UserLogin
-from .models import LoginBonus, DepositBonus
+from .models import BonusWallet, LoginBonus, DepositBonus
 from .models import Wallet, Deposit, WithdrawalRequest
 
 
@@ -26,17 +26,15 @@ class UserLoginAdmin(admin.ModelAdmin):
 
 @admin.register(Wallet)
 class WalletAdmin(admin.ModelAdmin):
-    list_display = ('user', 'id', 'value')
-    fields = ('user', 'value')
+    list_display = ('user', 'id', 'value', 'currency')
+    fields = ('user', 'value', 'currency')
     inlines = [
         DepositInline,
-        LoginBonusInline,
-        DepositBonusInline,
     ]
 
 @admin.register(Deposit)
 class DepositAdmin(admin.ModelAdmin):
-    list_display = ('timestamp', 'wallet', 'currency', 'value', )
+    list_display = ('timestamp', 'wallet', 'value', )
 
 
 @admin.register(LoginBonus)
@@ -48,3 +46,11 @@ class LoginBonusAdmin(admin.ModelAdmin):
 class DepositBonusAdmin(admin.ModelAdmin):
     list_display = ('name', 'value', )
 
+@admin.register(BonusWallet)
+class BonusWalletAdmin(admin.ModelAdmin):
+    list_display = ('user', 'id', 'value')
+    fields = ('user', 'value')
+    inlines = [
+        DepositBonusInline,
+        LoginBonusInline,
+    ]

@@ -1,5 +1,7 @@
 import random
 from decimal import Decimal
+
+from django.db.models import Q
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -7,7 +9,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 from .forms import SignUpForm, MatchForm, DepositForm
-from .models import Deposit
+from .models import Deposit, Wallet, BonusWallet
+
 
 @login_required
 def deposit(request):
@@ -24,6 +27,11 @@ def deposit(request):
 @login_required
 def play(request):
     if request.method == 'POST':
+        wallet = Wallet.objects.filter(user=request.user, money__gt=Decimal('2.00'))
+        bonus_wallet = BonusWallet.objects.filter(user=request.user, money__gt=Decimal('2.00'))
+        if not wallet.exists():
+            return HttpResponse("You need money!")
+
         form = MatchForm(request.POST)
         if form.is_valid():
             match = form.save(commit=False)
@@ -61,6 +69,7 @@ def home(request):
         data['form'] = MatchForm()
         data['deposit'] = DepositForm()
         data['money'] = request.user.wallet.value
+        data['bonus'] = request.user.bonuswallet.value
 
     return render(request, 'igaming/home.html', data)
 
