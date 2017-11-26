@@ -74,6 +74,13 @@ class WithdrawalRequest(models.Model):
                                  max_digits=13, decimal_places=2)
 
 
+class Match(models.Model):
+    user = models.ForeignKey(User)
+    timestamp = models.DateTimeField(auto_now=True)
+    result = models.IntegerField(null=True, blank=True)
+    answer = models.IntegerField(null=True, blank=True)
+    won = models.BooleanField(default=False)
+
 # Signals
 @receiver(user_logged_in, sender=User)
 def update_user_login(sender, user, **kwargs):

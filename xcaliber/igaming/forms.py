@@ -3,7 +3,44 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+from crispy_forms.layout import Submit, Field
+from crispy_forms.layout import Layout
+
+from .models import Match, Deposit
+
+class MatchForm(forms.ModelForm):
+    class Meta:
+        model = Match
+        fields = ('answer', )
+
+    def __init__(self, *args, **kwargs):
+        super(MatchForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'MatchForm'
+        self.helper.form_class = ''
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'play'
+        self.helper.layout = Layout(
+            Field('answer', ss_class='answer'),
+        )
+
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+
+class DepositForm(forms.ModelForm):
+    class Meta:
+        model = Deposit
+        exclude = ('wallet', )
+
+    def __init__(self, *args, **kwargs):
+        super(DepositForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'DepositForm'
+        self.helper.form_class = ''
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'deposit'
+
+        self.helper.add_input(Submit('submit', 'Submit'))
 
 
 class SignUpForm(UserCreationForm):

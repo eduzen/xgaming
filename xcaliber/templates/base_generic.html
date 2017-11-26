@@ -22,36 +22,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     <script>
-            $(function() {
-                var action;
-                $(".number-spinner button").mousedown(function () {
-                    btn = $(this);
-                    input = btn.closest('.number-spinner').find('input');
-                    btn.closest('.number-spinner').find('button').prop("disabled", false);
-
-                    if (btn.attr('data-dir') == 'up') {
-                        action = setInterval(function(){
-                            if ( input.attr('max') == undefined || parseInt(input.val()) < parseInt(input.attr('max')) ) {
-                                input.val(parseInt(input.val())+1);
-                            }else{
-                                btn.prop("disabled", true);
-                                clearInterval(action);
-                            }
-                        }, 50);
-                    } else {
-                        action = setInterval(function(){
-                            if ( input.attr('min') == undefined || parseInt(input.val()) > parseInt(input.attr('min')) ) {
-                                input.val(parseInt(input.val())-1);
-                            }else{
-                                btn.prop("disabled", true);
-                                clearInterval(action);
-                            }
-                        }, 50);
-                    }
-                }).mouseup(function(){
-                    clearInterval(action);
-                });
-            });
+        $("input[name=answer]").on("change", function() {
+            var val = Math.abs(parseInt(this.value, 10) || 1);
+            if (val > 36 || val < 0) {
+                alert('numbers from 0 to 36');
+                this.value = 0
+            }
+        });
     </script>
 
     </body>
