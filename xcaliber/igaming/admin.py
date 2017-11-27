@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import UserLogin
 from .models import BonusWallet, LoginBonus, DepositBonus
-from .models import Wallet, Deposit, WithdrawalRequest
+from .models import Wallet, Deposit, Withdrawn
 
 
 class DepositInline(admin.TabularInline):
@@ -32,6 +32,7 @@ class WalletAdmin(admin.ModelAdmin):
         DepositInline,
     ]
 
+
 @admin.register(Deposit)
 class DepositAdmin(admin.ModelAdmin):
     list_display = ('timestamp', 'wallet', 'value', )
@@ -46,6 +47,7 @@ class LoginBonusAdmin(admin.ModelAdmin):
 class DepositBonusAdmin(admin.ModelAdmin):
     list_display = ('name', 'value', )
 
+
 @admin.register(BonusWallet)
 class BonusWalletAdmin(admin.ModelAdmin):
     list_display = ('user', 'id', 'value')
@@ -54,3 +56,9 @@ class BonusWalletAdmin(admin.ModelAdmin):
         DepositBonusInline,
         LoginBonusInline,
     ]
+
+
+@admin.register(Withdrawn)
+class WithdrawnAdmin(admin.ModelAdmin):
+    list_display = ('wallet', 'amount', 'timestamp' )
+

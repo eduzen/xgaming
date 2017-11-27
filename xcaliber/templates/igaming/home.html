@@ -63,6 +63,18 @@
         </div>
 
         <hr />
+        <h4>Whitdrawn</h4>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-3 col-xs-offset-3">
+                    {% crispy whitdrawn %}
+                    {% csrf_token %}
+                </div>
+            </div>
+        </div>
+
+        <hr />
         <a href="{% url 'logout' %}">Log out</a>
     {% else %}
         <h3>Welcome!</h3>

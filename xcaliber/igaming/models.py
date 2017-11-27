@@ -81,7 +81,9 @@ class DepositBonus(Bonus):
                                 max_digits=13, decimal_places=2)
 
 
-class WithdrawalRequest(models.Model):
+class Withdrawn(models.Model):
+    wallet = models.ForeignKey(Wallet)
+    timestamp = models.DateTimeField(auto_now=True)
     amount = models.DecimalField(default=Decimal('0.00'),
                                  max_digits=13, decimal_places=2)
 
