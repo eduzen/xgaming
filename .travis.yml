@@ -1,8 +1,8 @@
 language: python
 python:
   - "2.7"
-  - "3.6.2"
-before_script: cd xcaliber
+  - "3.6"
 script:
     - pytest
+before_script: cd xcaliber
 install: "pip install -r requirements.txt"
