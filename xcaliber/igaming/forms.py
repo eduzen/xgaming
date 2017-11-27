@@ -6,7 +6,24 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Field
 from crispy_forms.layout import Layout
 
-from .models import Match, Deposit
+from .models import Match, Deposit, Withdrawn
+
+
+class WithdrawnForm(forms.ModelForm):
+    class Meta:
+        model = Withdrawn
+        fields = ('amount', )
+
+    def __init__(self, *args, **kwargs):
+        super(WithdrawnForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'WithdrawnForm'
+        self.helper.form_class = ''
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'withdrawn'
+
+        self.helper.add_input(Submit('submit', 'Submit'))
+
 
 class MatchForm(forms.ModelForm):
     class Meta:

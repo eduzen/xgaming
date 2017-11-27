@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from .forms import SignUpForm, MatchForm, DepositForm
+from .forms import SignUpForm, MatchForm, DepositForm, WithdrawnForm
 from .models import Deposit, Wallet, BonusWallet
 
 
@@ -87,6 +87,7 @@ def home(request):
     data = {}
     if request.user.is_authenticated:
         data['form'] = MatchForm()
+        data['withdrawn'] = WithdrawnForm()
         data['deposit'] = DepositForm()
         w = Wallet.objects.filter(user=request.user).aggregate(Sum('value'))
         b = BonusWallet.objects.filter(user=request.user).aggregate(Sum('value'))
