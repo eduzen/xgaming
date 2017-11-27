@@ -1,10 +1,12 @@
 import pytest
 from importlib import import_module
+
 from django.contrib.auth.models import User
-from igaming.models import UserLogin
 from django.contrib.auth import authenticate, login
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.conf import settings
+
+from igaming.models import UserLogin
 
 
 @pytest.fixture()

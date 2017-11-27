@@ -1,6 +1,7 @@
 import random
 from decimal import Decimal
 
+from django.db.models import Sum
 from django.db.models import Q
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
@@ -18,34 +19,53 @@ def deposit(request):
         form = DepositForm(request.POST)
         if form.is_valid():
             deposit = form.save(commit=False)
-            deposit.wallet = request.user.wallet
+            wallet = Wallet.objects.filter(user=request.user)
+            if wallet.exists():
+                deposit.wallet = wallet[0]
             deposit.save()
 
     return HttpResponseRedirect('home')
 
 
+def decide_match(form, user):
+    match = form.save(commit=False)
+    match.user = user
+    # 1 or 0, just to have more chances to win
+    match.result = random.randint(0, 1)
+    if match.result:
+        match.won = True
+
+    match.save()
+    return match.won
+
+def process_payment(wallet, won):
+    if won:
+        wallet.value += Decimal('2.00')
+    else:
+        wallet.value -= Decimal('2.00')
+    wallet.save()
+
+
 @login_required
 def play(request):
     if request.method == 'POST':
-        wallet = Wallet.objects.filter(user=request.user, money__gt=Decimal('2.00'))
-        bonus_wallet = BonusWallet.objects.filter(user=request.user, money__gt=Decimal('2.00'))
-        if not wallet.exists():
+        form = MatchForm(request.POST)
+        if not form.is_valid():
+            return HttpResponse("Something went wrong!")
+
+        wallet = Wallet.objects.filter(user=request.user, value__gt=Decimal('2.00'))
+        bonus_wallet = BonusWallet.objects.filter(user=request.user, value__gt=Decimal('2.00'))
+        if not wallet.exists() and not bonus_wallet.exists():
             return HttpResponse("You need money!")
 
-        form = MatchForm(request.POST)
-        if form.is_valid():
-            match = form.save(commit=False)
-            match.user = request.user
-            match.result = random.randint(0, 36)
-            if match.result != match.answer:
-                match.won = True
-                match.save()
-                Deposit.objects.create(wallet=request.user.wallet, value=Decimal('2'))
-                return HttpResponseRedirect('home')
-            match.save()
-            msg = "YOU LOSE!!! Your answer {} is not {}".format(
-                match.answer, match.result)
-            return HttpResponse(msg)
+        won = decide_match(form, user)
+
+        if wallet.exists():
+            process_payment(wallet[0], won)
+        else:
+            process_payment(bonus_wallet[0], won)
+
+        return HttpResponseRedirect("home")
 
 
 def signup(request):
@@ -68,8 +88,10 @@ def home(request):
     if request.user.is_authenticated:
         data['form'] = MatchForm()
         data['deposit'] = DepositForm()
-        data['money'] = request.user.wallet.value
-        data['bonus'] = request.user.bonuswallet.value
+        w = Wallet.objects.filter(user=request.user).aggregate(Sum('value'))
+        b = BonusWallet.objects.filter(user=request.user).aggregate(Sum('value'))
+        data['money'] = w['value__sum']
+        data['bonus'] = b['value__sum']
 
     return render(request, 'igaming/home.html', data)
 
