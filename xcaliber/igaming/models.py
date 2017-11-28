@@ -19,6 +19,11 @@ class UserLogin(models.Model):
     timestamp = models.DateTimeField()
 
 
+    class Meta:
+        verbose_name = "Users logins"
+        verbose_name_plural = "All users logins"
+
+
 class Wallet(models.Model):
     """
         Wallet for real money for users
@@ -29,6 +34,10 @@ class Wallet(models.Model):
     value = models.DecimalField(default=Decimal('0.00'),
                                 max_digits=13, decimal_places=2)
 
+    class Meta:
+        verbose_name = "Real money Wallet"
+        verbose_name_plural = "Real money Wallets"
+
 
 class BonusWallet(models.Model):
     """
@@ -37,6 +46,13 @@ class BonusWallet(models.Model):
     user = models.ForeignKey(User)
     value = models.DecimalField(default=Decimal('0.00'),
                                 max_digits=13, decimal_places=2)
+    bet = models.DecimalField(default=Decimal('0.00'),
+                              decimal_places=2, max_digits=13)
+
+    class Meta:
+        verbose_name = "Bonus Wallet"
+        verbose_name_plural = "All Bonus Wallets"
+
 
 
 class Deposit(models.Model):
@@ -53,12 +69,18 @@ class Deposit(models.Model):
         return "<Deposit for user: {}>".format(self.wallet.user.username)
 
 
+    class Meta:
+        verbose_name = "Deposit"
+        verbose_name_plural = "All Deposits"
+
+
 class Bonus(models.Model):
     """ Abstract class for Bonus"""
     wallet = models.ForeignKey('BonusWallet')
     currency = models.CharField(max_length=3,
                                 choices=CURRENCIES, default=CURRENCIES[0][0])
     timestamp = models.DateTimeField(auto_now=True)
+    wagering_requirement = models.IntegerField(default=10)
 
     def __str__(self):
         if self.name:
@@ -75,10 +97,20 @@ class LoginBonus(Bonus):
                                 max_digits=13, decimal_places=2)
 
 
+    class Meta:
+        verbose_name = "Login Bonus"
+        verbose_name_plural = "LoginBonus given"
+
+
 class DepositBonus(Bonus):
     name = models.CharField(max_length=120, default='Deposit Bonus')
     value = models.DecimalField(default=Decimal('20.00'),
                                 max_digits=13, decimal_places=2)
+
+
+    class Meta:
+        verbose_name = "Deposit Bonus"
+        verbose_name_plural = "DepositBonus given"
 
 
 class Withdrawn(models.Model):
@@ -87,6 +119,10 @@ class Withdrawn(models.Model):
     amount = models.DecimalField(default=Decimal('0.00'),
                                  max_digits=13, decimal_places=2)
 
+    class Meta:
+        verbose_name = "Withdraw"
+        verbose_name_plural = "Withdraws"
+
 
 class Match(models.Model):
     user = models.ForeignKey(User)
@@ -94,6 +130,10 @@ class Match(models.Model):
     result = models.IntegerField(null=True, blank=True)
     answer = models.IntegerField(null=True, blank=True)
     won = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "Match"
+        verbose_name_plural = "Matches"
 
 
 # Signals

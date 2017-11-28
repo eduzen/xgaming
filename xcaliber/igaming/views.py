@@ -28,6 +28,9 @@ def deposit(request):
 
 
 def decide_match(form, user):
+    """
+        Save a match and decide if it wins or lose
+    """
     match = form.save(commit=False)
     match.user = user
     # 1 or 0, just to have more chances to win
@@ -38,7 +41,10 @@ def decide_match(form, user):
     match.save()
     return match.won
 
-def process_payment(wallet, won):
+def _process_payment(wallet, won):
+    """
+        Add or remove money from a Wallet
+    """
     if won:
         wallet.value += Decimal('2.00')
     else:
@@ -58,7 +64,7 @@ def play(request):
         if not wallet.exists() and not bonus_wallet.exists():
             return HttpResponse("You need money!")
 
-        won = decide_match(form, user)
+        won = decide_match(form, request.user)
 
         if wallet.exists():
             process_payment(wallet[0], won)
