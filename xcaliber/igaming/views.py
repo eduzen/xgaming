@@ -20,6 +20,7 @@ def withdrawnbonus(request):
         if form.is_valid():
             withdrawn_bonus = form.save(commit=False)
             withdrawn_bonus.accepted = True
+            withdrawn.save()
             return HttpResponse('Withdraw accepted')
         return HttpResponse('You need to play more!!!')
 
@@ -30,8 +31,13 @@ def withdrawn(request):
     if request.method == 'POST':
         form = WithdrawnMoneyForm(request.user, request.POST)
         if form.is_valid():
+            wallet = Wallet.objects.filter(user=request.user)[0]
             withdrawn = form.save(commit=False)
             withdrawn.accepted = True
+            withdrawn.wallet = wallet
+            withdrawn.save()
+            wallet.value -= withdrawn.amount
+            wallet.save()
             return HttpResponse('Withdraw accepted')
         return HttpResponse('You need to play more!!!')
 
