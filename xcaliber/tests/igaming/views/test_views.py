@@ -54,6 +54,5 @@ def test_deposit_post_view_redirect(rf, wallet, mocker):
     mocker.patch('igaming.views.DepositForm')
     request = rf.post('deposit')
     request.user = wallet.user
-    pytest.set_trace()
     response = deposit(request)
     assert response.status_code == 302
