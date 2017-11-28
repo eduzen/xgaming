@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 
 from igaming.views import decide_match, process_payment
+from igaming.views import home
 from igaming.models import Wallet
 
 
@@ -27,3 +28,10 @@ def test_process_payment_nonempty_pocket(db, wallet, won, expected):
     process_payment(wallet, won)
 
     assert wallet.value == expected
+
+def test_home_view(rf, wallet):
+    request = rf.get('home')
+    request.user = wallet.user
+    response = home(request)
+    assert response.status_code == 200
+

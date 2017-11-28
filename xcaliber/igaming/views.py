@@ -41,7 +41,7 @@ def decide_match(form, user):
     match.save()
     return match.won
 
-def _process_payment(wallet, won):
+def process_payment(wallet, won):
     """
         Add or remove money from a Wallet
     """
@@ -50,6 +50,10 @@ def _process_payment(wallet, won):
     else:
         wallet.value -= Decimal('2.00')
     wallet.save()
+
+def count_bonus_wagered(bonus_wallet):
+    bonus_wallet.bet += Decimal('2.00')
+    bonus_wallet.save()
 
 
 @login_required
@@ -65,10 +69,10 @@ def play(request):
             return HttpResponse("You need money!")
 
         won = decide_match(form, request.user)
-
         if wallet.exists():
             process_payment(wallet[0], won)
         else:
+            count_bonus_wagered(bonus_wallet[0])
             process_payment(bonus_wallet[0], won)
 
         return HttpResponseRedirect("home")
@@ -96,9 +100,10 @@ def home(request):
         data['withdrawn'] = WithdrawnForm()
         data['deposit'] = DepositForm()
         w = Wallet.objects.filter(user=request.user).aggregate(Sum('value'))
-        b = BonusWallet.objects.filter(user=request.user).aggregate(Sum('value'))
+        b = BonusWallet.objects.filter(user=request.user).aggregate(Sum('value'), Sum('bet'))
         data['money'] = w['value__sum']
         data['bonus'] = b['value__sum']
+        data['wagered'] = b['bet__sum']
 
     return render(request, 'igaming/home.html', data)
 
