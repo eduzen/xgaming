@@ -3,9 +3,9 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 
 from igaming.views import decide_match, process_payment
-from igaming.views import home
+from igaming.views import home, deposit
 from igaming.models import Wallet
-
+from igaming.forms import DepositForm
 
 @pytest.fixture()
 def user(db):
@@ -35,3 +35,25 @@ def test_home_view(rf, wallet):
     response = home(request)
     assert response.status_code == 200
 
+
+def test_deposit_get_view_redirect(rf, user):
+    request = rf.get('deposit')
+    request.user = user
+    response = deposit(request)
+    assert response.status_code == 302
+
+
+def test_deposit_post_view_redirect(rf, user, mocker):
+    request = rf.get('deposit')
+    request.user = user
+    response = deposit(request)
+    assert response.status_code == 302
+
+
+def test_deposit_post_view_redirect(rf, wallet, mocker):
+    mocker.patch('igaming.views.DepositForm')
+    request = rf.post('deposit')
+    request.user = wallet.user
+    pytest.set_trace()
+    response = deposit(request)
+    assert response.status_code == 302
