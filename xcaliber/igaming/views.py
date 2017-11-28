@@ -26,6 +26,18 @@ def withdrawnbonus(request):
     return HttpResponseRedirect('home')
 
 
+def withdrawn(request):
+    if request.method == 'POST':
+        form = WithdrawnMoneyForm(request.user, request.POST)
+        if form.is_valid():
+            withdrawn = form.save(commit=False)
+            withdrawn.accepted = True
+            return HttpResponse('Withdraw accepted')
+        return HttpResponse('You need to play more!!!')
+
+    return HttpResponseRedirect('home')
+
+
 @login_required
 def deposit(request):
     if request.method == 'POST':

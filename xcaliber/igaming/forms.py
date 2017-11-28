@@ -16,7 +16,9 @@ class WithdrawnMoneyForm(forms.ModelForm):
         model = WithdrawnMoney
         fields = ('amount', )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user=None, *args, **kwargs):
+        if user:
+            self.user = user
         super(WithdrawnMoneyForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_id = 'WithdrawnForm'
@@ -25,6 +27,23 @@ class WithdrawnMoneyForm(forms.ModelForm):
         self.helper.form_action = 'withdrawn'
 
         self.helper.add_input(Submit('submit', 'Submit'))
+
+
+    def is_valid(self):
+        valid = super(WithdrawnMoneyForm, self).is_valid()
+
+        if not valid:
+            return valid
+
+        wallet = Wallet.objects.filter(user=self.user)
+        if not wallet.exists:
+            return False
+        wallet = wallet[0]
+
+        if wallet.value < self.cleaned_data['amount']:
+            return False
+
+        return True
 
 
 class WithdrawnBonusForm(forms.ModelForm):
