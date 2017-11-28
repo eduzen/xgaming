@@ -3,6 +3,7 @@ python:
   - "2.7"
   - "3.6"
 script:
-    - pytest
+    - pytest --cov=.
 before_script: cd xcaliber
 install: "pip install -r requirements.txt"
+after_script: codecov
