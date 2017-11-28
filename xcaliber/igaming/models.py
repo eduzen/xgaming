@@ -126,7 +126,7 @@ class WithdrawnMoney(models.Model):
 
 
 class WithdrawnBonus(models.Model):
-    wallet = models.ForeignKey(BonusWallet)
+    wallet = models.ForeignKey(Wallet)
     timestamp = models.DateTimeField(auto_now=True)
     accepted = models.BooleanField(default=False)
     amount = models.DecimalField(default=Decimal('0.00'),

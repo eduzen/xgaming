@@ -41,6 +41,7 @@ class WalletAdmin(admin.ModelAdmin):
     inlines = [
         DepositInline,
         WithdrawnMoneyInline,
+        WithdrawnBonusInline,
     ]
 
 
@@ -66,7 +67,6 @@ class BonusWalletAdmin(admin.ModelAdmin):
     inlines = [
         DepositBonusInline,
         LoginBonusInline,
-        WithdrawnBonusInline,
     ]
 
 

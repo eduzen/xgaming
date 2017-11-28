@@ -12,15 +12,26 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm, MatchForm, DepositForm
 from .forms import WithdrawnMoneyForm, WithdrawnBonusForm
 from .models import Deposit, Wallet, BonusWallet
+from config.models import WageringRequirement
 
 
 def withdrawnbonus(request):
     if request.method == 'POST':
         form = WithdrawnBonusForm(request.user, request.POST)
         if form.is_valid():
+            wallet = Wallet.objects.filter(user=request.user)[0]
+            wallet_bonus = BonusWallet.objects.filter(user=request.user)[0]
             withdrawn_bonus = form.save(commit=False)
             withdrawn_bonus.accepted = True
-            withdrawn.save()
+            withdrawn_bonus.wallet = wallet
+            withdrawn_bonus.save()
+            wallet.value += withdrawn_bonus.amount
+            wallet_bonus.value -= withdrawn_bonus.amount
+            wagering_requirement = WageringRequirement.objects.get().value
+            cash_in = wagering_requirement * withdrawn_bonus.amount
+            wallet_bonus.bet -= cash_in
+            wallet_bonus.save()
+            wallet.save()
             return HttpResponse('Withdraw accepted')
         return HttpResponse('You need to play more!!!')
 
