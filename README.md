@@ -2,10 +2,20 @@
 
 # Game 
 
+Install dependencies
+```bash
+  pip install -r requirements.txt
+```
+
+Runserver
+```bash
+  python manage.py runserver
+```
+
 To run test:
-´´´python
-pytest
-´´´
+```bash
+  pytest
+```
 
 ## Django
 ## Sqlite
