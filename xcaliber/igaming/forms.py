@@ -7,7 +7,7 @@ from crispy_forms.layout import Submit, Field
 from crispy_forms.layout import Layout
 
 from .models import Match, Deposit, WithdrawnMoney, WithdrawnBonus
-from .models import BonusWallet
+from .models import BonusWallet, Wallet
 from config.models import WageringRequirement
 
 
