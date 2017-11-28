@@ -70,7 +70,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-3 col-xs-offset-3">
-                    {% crispy withdrawn %}
+                    <h5>Money</h5>
+                    {% crispy withdrawn_money %}
+                    {% csrf_token %}
+                </div>
+                <div class="col-xs-3 col-xs-offset-3">
+                    <h5>Bonus Money</h5>
+                    {% crispy withdrawn_bonus %}
                     {% csrf_token %}
                 </div>
             </div>

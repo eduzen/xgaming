@@ -113,15 +113,28 @@ class DepositBonus(Bonus):
         verbose_name_plural = "DepositBonus given"
 
 
-class Withdrawn(models.Model):
+class WithdrawnMoney(models.Model):
     wallet = models.ForeignKey(Wallet)
     timestamp = models.DateTimeField(auto_now=True)
+    accepted = models.BooleanField(default=False)
     amount = models.DecimalField(default=Decimal('0.00'),
                                  max_digits=13, decimal_places=2)
 
     class Meta:
-        verbose_name = "Withdraw"
-        verbose_name_plural = "Withdraws"
+        verbose_name = "Withdraw money"
+        verbose_name_plural = "Withdraws money"
+
+
+class WithdrawnBonus(models.Model):
+    wallet = models.ForeignKey(BonusWallet)
+    timestamp = models.DateTimeField(auto_now=True)
+    accepted = models.BooleanField(default=False)
+    amount = models.DecimalField(default=Decimal('0.00'),
+                                 max_digits=13, decimal_places=2)
+
+    class Meta:
+        verbose_name = "Withdraw bonusmoney"
+        verbose_name_plural = "Withdraws bonusmoney"
 
 
 class Match(models.Model):

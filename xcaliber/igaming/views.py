@@ -9,19 +9,31 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from .forms import SignUpForm, MatchForm, DepositForm, WithdrawnForm
+from .forms import SignUpForm, MatchForm, DepositForm
+from .forms import WithdrawnMoneyForm, WithdrawnBonusForm
 from .models import Deposit, Wallet, BonusWallet
+
+
+def withdrawnbonus(request):
+    if request.method == 'POST':
+        form = WithdrawnBonusForm(request.user, request.POST)
+        if form.is_valid():
+            withdrawn_bonus = form.save(commit=False)
+            withdrawn_bonus.accepted = True
+            return HttpResponse('Withdraw accepted')
+        return HttpResponse('You need to play more!!!')
+
+    return HttpResponseRedirect('home')
 
 
 @login_required
 def deposit(request):
     if request.method == 'POST':
-        form = DepositForm(request.POST)
+        form = DepositForm(request.user, request.POST)
         if form.is_valid():
             deposit = form.save(commit=False)
-            wallet = Wallet.objects.filter(user=request.user)
-            if wallet.exists():
-                deposit.wallet = wallet[0]
+            wallet = Wallet.objects.filter(user=request.user)[0]
+            deposit.wallet = wallet
             deposit.save()
 
     return HttpResponseRedirect('home')
@@ -97,7 +109,8 @@ def home(request):
     data = {}
     if request.user.is_authenticated:
         data['form'] = MatchForm()
-        data['withdrawn'] = WithdrawnForm()
+        data['withdrawn_bonus'] = WithdrawnBonusForm(request.user)
+        data['withdrawn_money'] = WithdrawnMoneyForm()
         data['deposit'] = DepositForm()
         w = Wallet.objects.filter(user=request.user).aggregate(Sum('value'))
         b = BonusWallet.objects.filter(user=request.user).aggregate(Sum('value'), Sum('bet'))

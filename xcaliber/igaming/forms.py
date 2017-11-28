@@ -6,16 +6,18 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Field
 from crispy_forms.layout import Layout
 
-from .models import Match, Deposit, Withdrawn
+from .models import Match, Deposit, WithdrawnMoney, WithdrawnBonus
+from .models import BonusWallet
+from config.models import WageringRequirement
 
 
-class WithdrawnForm(forms.ModelForm):
+class WithdrawnMoneyForm(forms.ModelForm):
     class Meta:
-        model = Withdrawn
+        model = WithdrawnMoney
         fields = ('amount', )
 
     def __init__(self, *args, **kwargs):
-        super(WithdrawnForm, self).__init__(*args, **kwargs)
+        super(WithdrawnMoneyForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_id = 'WithdrawnForm'
         self.helper.form_class = ''
@@ -23,6 +25,44 @@ class WithdrawnForm(forms.ModelForm):
         self.helper.form_action = 'withdrawn'
 
         self.helper.add_input(Submit('submit', 'Submit'))
+
+
+class WithdrawnBonusForm(forms.ModelForm):
+    class Meta:
+        model = WithdrawnBonus
+        fields = ('amount', )
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super(WithdrawnBonusForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'WithdrawnForm'
+        self.helper.form_class = ''
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'withdrawnbonus'
+
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+    def is_valid(self):
+        valid = super(WithdrawnBonusForm, self).is_valid()
+
+        if not valid:
+            return valid
+
+        bonus_wallet = BonusWallet.objects.filter(user=self.user)
+        if not bonus_wallet.exists:
+            return False
+        bonus_wallet = bonus_wallet[0]
+
+        wagered = bonus_wallet.bet
+        amount_required = self.cleaned_data['amount']
+        wagering_requirement = WageringRequirement.objects.get().value
+
+        cash_in = wagering_requirement * amount_required
+        if wagered >= cash_in:
+            return True
+
+        return False
 
 
 class MatchForm(forms.ModelForm):
@@ -49,7 +89,9 @@ class DepositForm(forms.ModelForm):
         model = Deposit
         exclude = ('wallet', )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user=None, *args, **kwargs):
+        if user:
+            self.user = user
         super(DepositForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_id = 'DepositForm'
@@ -58,6 +100,17 @@ class DepositForm(forms.ModelForm):
         self.helper.form_action = 'deposit'
 
         self.helper.add_input(Submit('submit', 'Submit'))
+
+    def is_valid(self):
+        valid = super(DepositForm, self).is_valid()
+
+        if not valid:
+            return valid
+
+        wallet = Wallet.objects.filter(user=self.user)
+        if wallet.exists:
+            return True
+        return False
 
 
 class SignUpForm(UserCreationForm):
