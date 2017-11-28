@@ -2,5 +2,10 @@
 
 # Game 
 
+To run test:
+´´´python
+pytest
+´´´
+
 ## Django
 ## Sqlite
