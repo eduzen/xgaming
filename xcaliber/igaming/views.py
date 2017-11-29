@@ -37,12 +37,12 @@ class Play(View):
         if wallet.exists():
             self._process_payment(wallet[0], won)
         else:
-            self.count_bonus_wagered(bonus_wallet[0])
+            self._count_bonus_wagered(bonus_wallet[0])
             self._process_payment(bonus_wallet[0], won)
 
         return HttpResponseRedirect("home")
 
-    def _decide_match(form, user):
+    def _decide_match(self, form, user):
         """
             Save a match and decide if it wins or lose
         """
@@ -56,7 +56,7 @@ class Play(View):
         match.save()
         return match.won
 
-    def _process_payment(wallet, won):
+    def _process_payment(self, wallet, won):
         """
             Add or remove money from a Wallet
         """
@@ -66,7 +66,7 @@ class Play(View):
             wallet.value -= Decimal('2.00')
         wallet.save()
 
-    def _count_bonus_wagered(bonus_wallet):
+    def _count_bonus_wagered(self, bonus_wallet):
         bonus_wallet.bet += Decimal('2.00')
         bonus_wallet.save()
 

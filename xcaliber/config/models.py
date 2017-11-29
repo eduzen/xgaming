@@ -9,4 +9,4 @@ class WageringRequirement(SingletonModel):
         return u"Wagering Requirement"
 
     class Meta:
-        verbose_name = "WageringRequirement Configuration"
+        verbose_name = "Wagering Requirement"

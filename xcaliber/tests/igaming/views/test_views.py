@@ -10,7 +10,8 @@ from igaming.views import Play, deposit, home
     (False, Decimal('0.00')),
 ])
 def test_process_payment_nonempty_pocket(db, wallet, won, expected):
-    Play._process_payment(wallet, won)
+    p = Play()
+    p._process_payment(wallet, won)
 
     assert wallet.value == expected
 

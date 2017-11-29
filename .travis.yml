@@ -5,5 +5,5 @@ python:
 script:
     - pytest --cov=.
 before_script: cd xcaliber
-install: "pip install -r requirements.txt"
+install: "pip install -r requirements_dev.txt"
 after_script: codecov
