@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from .views import (deposit, home, index, play, signup, withdrawn,
+from .views import (deposit, home, play, signup, withdrawn,
                     withdrawnbonus)
 
 urlpatterns = [

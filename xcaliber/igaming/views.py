@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q, Sum
+from django.db.models import Sum
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
@@ -11,7 +11,7 @@ from config.models import WageringRequirement
 
 from .forms import (DepositForm, MatchForm, SignUpForm, WithdrawnBonusForm,
                     WithdrawnMoneyForm)
-from .models import BonusWallet, Deposit, Wallet
+from .models import BonusWallet, Wallet
 
 
 def withdrawnbonus(request):
@@ -81,6 +81,7 @@ def decide_match(form, user):
     match.save()
     return match.won
 
+
 def process_payment(wallet, won):
     """
         Add or remove money from a Wallet
@@ -90,6 +91,7 @@ def process_payment(wallet, won):
     else:
         wallet.value -= Decimal('2.00')
     wallet.save()
+
 
 def count_bonus_wagered(bonus_wallet):
     bonus_wallet.bet += Decimal('2.00')
@@ -103,8 +105,12 @@ def play(request):
         if not form.is_valid():
             return HttpResponse("Something went wrong!")
 
-        wallet = Wallet.objects.filter(user=request.user, value__gt=Decimal('2.00'))
-        bonus_wallet = BonusWallet.objects.filter(user=request.user, value__gt=Decimal('2.00'))
+        wallet = Wallet.objects.filter(
+            user=request.user, value__gt=Decimal('2.00')
+        )
+        bonus_wallet = BonusWallet.objects.filter(
+            user=request.user, value__gt=Decimal('2.00')
+        )
         if not wallet.exists() and not bonus_wallet.exists():
             return HttpResponse("You need money!")
 
@@ -141,13 +147,10 @@ def home(request):
         data['withdrawn_money'] = WithdrawnMoneyForm()
         data['deposit'] = DepositForm()
         w = Wallet.objects.filter(user=request.user).aggregate(Sum('value'))
-        b = BonusWallet.objects.filter(user=request.user).aggregate(Sum('value'), Sum('bet'))
+        b = BonusWallet.objects.filter(user=request.user).aggregate(
+            Sum('value'), Sum('bet'))
         data['money'] = w['value__sum']
         data['bonus'] = b['value__sum']
         data['wagered'] = b['bet__sum']
 
     return render(request, 'igaming/home.html', data)
-
-
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")

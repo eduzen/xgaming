@@ -72,9 +72,9 @@ class BonusWalletAdmin(admin.ModelAdmin):
 
 @admin.register(WithdrawnMoney)
 class WithdrawnMoneyAdmin(admin.ModelAdmin):
-    list_display = ('wallet', 'amount', 'timestamp', 'accepted' )
+    list_display = ('wallet', 'amount', 'timestamp', 'accepted')
 
 
 @admin.register(WithdrawnBonus)
 class WithdrawnBonusAdmin(admin.ModelAdmin):
-    list_display = ('wallet', 'amount', 'timestamp', 'accepted' )
+    list_display = ('wallet', 'amount', 'timestamp', 'accepted')

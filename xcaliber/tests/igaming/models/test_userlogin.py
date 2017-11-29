@@ -2,9 +2,8 @@ from importlib import import_module
 
 import pytest
 from django.conf import settings
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
 from django.contrib.auth.models import User
-from django.contrib.sessions.middleware import SessionMiddleware
 
 from igaming.models import UserLogin
 

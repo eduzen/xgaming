@@ -27,7 +27,6 @@ class WithdrawnMoneyForm(forms.ModelForm):
 
         self.helper.add_input(Submit('submit', 'Submit'))
 
-
     def is_valid(self):
         valid = super(WithdrawnMoneyForm, self).is_valid()
 
