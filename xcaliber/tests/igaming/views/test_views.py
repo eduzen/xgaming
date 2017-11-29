@@ -1,23 +1,8 @@
 from decimal import Decimal
 
 import pytest
-from django.contrib.auth.models import User
 
-from igaming.models import Wallet
-from igaming.views import deposit, home, process_payment
-
-
-@pytest.fixture()
-def user(db):
-    user = User.objects.create(username='myuser', password='pswd')
-    return user
-
-
-@pytest.fixture()
-def wallet(db):
-    user = User.objects.create(username='myuser', password='pswd')
-    wallet = Wallet.objects.create(user=user, value=Decimal('2.00'))
-    return wallet
+from igaming.views import Play, deposit, home
 
 
 @pytest.mark.parametrize("won,expected", [
@@ -25,7 +10,7 @@ def wallet(db):
     (False, Decimal('0.00')),
 ])
 def test_process_payment_nonempty_pocket(db, wallet, won, expected):
-    process_payment(wallet, won)
+    Play._process_payment(wallet, won)
 
     assert wallet.value == expected
 

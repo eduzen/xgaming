@@ -6,12 +6,69 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
+from django.views import View
 
 from config.models import WageringRequirement
 
 from .forms import (DepositForm, MatchForm, SignUpForm, WithdrawnBonusForm,
                     WithdrawnMoneyForm)
 from .models import BonusWallet, Wallet
+
+
+class Play(View):
+
+    @method_decorator(login_required)
+    def post(self, request):
+        form = MatchForm(request.POST)
+        if not form.is_valid():
+            return HttpResponse("Something went wrong!")
+
+        wallet = Wallet.objects.filter(
+            user=request.user, value__gt=Decimal('2.00')
+        )
+        bonus_wallet = BonusWallet.objects.filter(
+            user=request.user, value__gt=Decimal('2.00')
+        )
+        if not wallet.exists() and not bonus_wallet.exists():
+            return HttpResponse("You need money!")
+
+        won = self._decide_match(form, request.user)
+        if wallet.exists():
+            self._process_payment(wallet[0], won)
+        else:
+            self.count_bonus_wagered(bonus_wallet[0])
+            self._process_payment(bonus_wallet[0], won)
+
+        return HttpResponseRedirect("home")
+
+    def _decide_match(form, user):
+        """
+            Save a match and decide if it wins or lose
+        """
+        match = form.save(commit=False)
+        match.user = user
+        # 1 or 0, just to have more chances to win
+        match.result = random.randint(0, 1)
+        if match.result:
+            match.won = True
+
+        match.save()
+        return match.won
+
+    def _process_payment(wallet, won):
+        """
+            Add or remove money from a Wallet
+        """
+        if won:
+            wallet.value += Decimal('2.00')
+        else:
+            wallet.value -= Decimal('2.00')
+        wallet.save()
+
+    def _count_bonus_wagered(bonus_wallet):
+        bonus_wallet.bet += Decimal('2.00')
+        bonus_wallet.save()
 
 
 def withdrawnbonus(request):
@@ -65,63 +122,6 @@ def deposit(request):
             deposit.save()
 
     return HttpResponseRedirect('home')
-
-
-def decide_match(form, user):
-    """
-        Save a match and decide if it wins or lose
-    """
-    match = form.save(commit=False)
-    match.user = user
-    # 1 or 0, just to have more chances to win
-    match.result = random.randint(0, 1)
-    if match.result:
-        match.won = True
-
-    match.save()
-    return match.won
-
-
-def process_payment(wallet, won):
-    """
-        Add or remove money from a Wallet
-    """
-    if won:
-        wallet.value += Decimal('2.00')
-    else:
-        wallet.value -= Decimal('2.00')
-    wallet.save()
-
-
-def count_bonus_wagered(bonus_wallet):
-    bonus_wallet.bet += Decimal('2.00')
-    bonus_wallet.save()
-
-
-@login_required
-def play(request):
-    if request.method == 'POST':
-        form = MatchForm(request.POST)
-        if not form.is_valid():
-            return HttpResponse("Something went wrong!")
-
-        wallet = Wallet.objects.filter(
-            user=request.user, value__gt=Decimal('2.00')
-        )
-        bonus_wallet = BonusWallet.objects.filter(
-            user=request.user, value__gt=Decimal('2.00')
-        )
-        if not wallet.exists() and not bonus_wallet.exists():
-            return HttpResponse("You need money!")
-
-        won = decide_match(form, request.user)
-        if wallet.exists():
-            process_payment(wallet[0], won)
-        else:
-            count_bonus_wagered(bonus_wallet[0])
-            process_payment(bonus_wallet[0], won)
-
-        return HttpResponseRedirect("home")
 
 
 def signup(request):

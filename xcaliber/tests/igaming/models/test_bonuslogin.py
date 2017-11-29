@@ -1,17 +1,9 @@
 from importlib import import_module
 
-import pytest
 from django.conf import settings
 from django.contrib.auth import login
-from django.contrib.auth.models import User
 
 from igaming.models import BonusWallet, LoginBonus
-
-
-@pytest.fixture()
-def user(db):
-    user = User.objects.create(username='myuser', password='pswd')
-    return user
 
 
 def test_bonus_login_creation(rf, user):
