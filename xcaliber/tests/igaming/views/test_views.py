@@ -1,11 +1,12 @@
-import pytest
 from decimal import Decimal
+
+import pytest
 from django.contrib.auth.models import User
 
-from igaming.views import decide_match, process_payment
-from igaming.views import home, deposit
-from igaming.models import Wallet
 from igaming.forms import DepositForm
+from igaming.models import Wallet
+from igaming.views import decide_match, deposit, home, process_payment
+
 
 @pytest.fixture()
 def user(db):

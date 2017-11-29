@@ -1,12 +1,11 @@
-import pytest
 from importlib import import_module
 
+import pytest
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.contrib.auth import login
+from django.contrib.auth.models import User
 
-from igaming.models import BonusWallet
-from igaming.models import LoginBonus
+from igaming.models import BonusWallet, LoginBonus
 
 
 @pytest.fixture()
@@ -33,4 +32,3 @@ def test_bonus_login_creation(rf, user):
 
     assert before_wallet < after_wallet
     assert before_bonus < after_bonus
-

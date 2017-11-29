@@ -1,7 +1,8 @@
-import pytest
 from decimal import Decimal
 
+import pytest
 from django.contrib.auth.models import User
+
 from igaming.forms import DepositForm
 from igaming.models import Wallet
 

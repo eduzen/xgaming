@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
-from .views import index, home, signup, play
-from .views import deposit, withdrawnbonus, withdrawn
+from .views import (deposit, home, index, play, signup, withdrawn,
+                    withdrawnbonus)
 
 urlpatterns = [
     url(r'^$', home, name='index'),

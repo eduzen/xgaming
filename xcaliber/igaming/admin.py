@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import UserLogin
-from .models import BonusWallet, LoginBonus, DepositBonus
-from .models import Wallet, Deposit, WithdrawnMoney, WithdrawnBonus
+
+from .models import (BonusWallet, Deposit, DepositBonus, LoginBonus, UserLogin,
+                     Wallet, WithdrawnBonus, WithdrawnMoney)
 
 
 class DepositInline(admin.TabularInline):

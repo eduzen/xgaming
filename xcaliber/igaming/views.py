@@ -1,18 +1,17 @@
 import random
 from decimal import Decimal
 
-from django.db.models import Sum
-from django.db.models import Q
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q, Sum
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
 
-from .forms import SignUpForm, MatchForm, DepositForm
-from .forms import WithdrawnMoneyForm, WithdrawnBonusForm
-from .models import Deposit, Wallet, BonusWallet
 from config.models import WageringRequirement
+
+from .forms import (DepositForm, MatchForm, SignUpForm, WithdrawnBonusForm,
+                    WithdrawnMoneyForm)
+from .models import BonusWallet, Deposit, Wallet
 
 
 def withdrawnbonus(request):
