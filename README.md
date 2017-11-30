@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/eduzen/xgaming.svg?branch=master)](https://travis-ci.org/eduzen/xgaming) [![codecov](https://codecov.io/gh/eduzen/xgaming/branch/master/graph/badge.svg)](https://codecov.io/gh/eduzen/xgaming)
 
 # Game 
+![alt text](https://raw.githubusercontent.com/eduzen/xgaming/master/home.png)
 
 Install dependencies
 ```bash
@@ -18,4 +19,7 @@ To run test:
 ```
 
 ## Django
+
+
+
 ## Sqlite
