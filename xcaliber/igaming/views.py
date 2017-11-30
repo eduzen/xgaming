@@ -1,13 +1,13 @@
 import random
 from decimal import Decimal
 
-from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.generic.edit import FormView
 
 from config.models import WageringRequirement
 
@@ -16,7 +16,7 @@ from .forms import (DepositForm, MatchForm, SignUpForm, WithdrawnBonusForm,
 from .models import BonusWallet, Wallet
 
 
-class Play(View):
+class PlayView(View):
 
     @method_decorator(login_required)
     def post(self, request):
@@ -124,19 +124,14 @@ def deposit(request):
     return HttpResponseRedirect('home')
 
 
-def signup(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return HttpResponseRedirect('home')
-    else:
-        form = SignUpForm()
-    return render(request, 'igaming/signup.html', {'form': form})
+class SignupView(FormView):
+    template_name = 'igaming/signup.html'
+    form_class = SignUpForm
+    success_url = '/home'
+
+    def form_valid(self, form):
+        form.save()
+        return super(SignupView, self).form_valid(form)
 
 
 def home(request):

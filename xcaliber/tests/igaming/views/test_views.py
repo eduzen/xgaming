@@ -2,7 +2,7 @@ from decimal import Decimal
 
 import pytest
 
-from igaming.views import Play, deposit, home
+from igaming.views import PlayView, deposit, home
 
 
 @pytest.mark.parametrize("won,expected", [
@@ -10,7 +10,7 @@ from igaming.views import Play, deposit, home
     (False, Decimal('0.00')),
 ])
 def test_process_payment_nonempty_pocket(db, wallet, won, expected):
-    p = Play()
+    p = PlayView()
     p._process_payment(wallet, won)
 
     assert wallet.value == expected
