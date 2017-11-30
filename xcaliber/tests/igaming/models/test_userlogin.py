@@ -1,17 +1,16 @@
 from importlib import import_module
 
-import pytest
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.models import User
+from hypothesis.extra.django.models import models
 
 from igaming.models import UserLogin
 
 
-@pytest.fixture()
-def user(db):
-    user = User.objects.create(username='myuser', password='pswd')
-    return user
+def test_creation(db):
+    user_login = models(UserLogin, user=models(User)).example()
+    assert user_login
 
 
 def test_non_user_login_creation(db):
