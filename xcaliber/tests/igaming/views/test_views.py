@@ -1,8 +1,24 @@
 from decimal import Decimal
 
 import pytest
+from hypothesis import given, strategies as st
+from django.core.urlresolvers import reverse
 
 from igaming.views import PlayView, deposit, home
+
+PUBLIC_URLS = ('home', 'signup', 'login', 'logout', 'password_reset')
+
+
+@given(url_name=st.sampled_from(PUBLIC_URLS))
+def test_public_urls(url_name, client):
+    url = reverse(url_name)
+    response = client.get(url)
+    assert response.status_code == 200
+
+
+def test_an_admin_view(admin_client):
+    response = admin_client.get('/admin/')
+    assert response.status_code == 200
 
 
 @pytest.mark.parametrize("won,expected", [
