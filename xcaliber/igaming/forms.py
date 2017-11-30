@@ -49,8 +49,9 @@ class WithdrawnBonusForm(forms.ModelForm):
         model = WithdrawnBonus
         fields = ('amount', )
 
-    def __init__(self, user, *args, **kwargs):
-        self.user = user
+    def __init__(self, user=None, *args, **kwargs):
+        if user:
+            self.user = user
         super(WithdrawnBonusForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_id = 'WithdrawnForm'

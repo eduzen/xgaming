@@ -1,8 +1,9 @@
 from decimal import Decimal
 
 import pytest
-from hypothesis import given, strategies as st
 from django.core.urlresolvers import reverse
+from hypothesis import strategies as st
+from hypothesis import given
 
 from igaming.views import PlayView, deposit, home
 

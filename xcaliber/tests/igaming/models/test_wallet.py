@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-
 from hypothesis.extra.django.models import models
 
 from igaming.models import Wallet
